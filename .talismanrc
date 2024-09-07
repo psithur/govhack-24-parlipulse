@@ -3,4 +3,6 @@ fileignoreconfig:
   checksum: e1df78fdc300c2a82a1e57baea9a820b7d7658a8a75a7e7f95cb700094f511c1
 - filename: src/psithur/govhack/get_data.clj
   checksum: 9d697b3bbbed3ed6dcb805596b9e40c4ff9de48255ec6901b7112eaf8b6e2b0d
+- filename: src/psithur/govhack/process_xml.clj
+  checksum: e57a45f058bd03d8e910a9393c7b102aa12d4b993359177c0227c50cafc944a6
 version: ""
