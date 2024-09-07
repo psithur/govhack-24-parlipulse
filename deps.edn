@@ -1,0 +1,17 @@
+{:paths   ["src" "test" "resources"]
+ :deps    {camel-snake-kebab/camel-snake-kebab {:mvn/version "0.4.3"}
+           clj-http/clj-http                   {:mvn/version "3.13.0"}
+           com.cnuernber/charred               {:mvn/version "1.034"}
+           com.taoensso/telemere               {:mvn/version "1.0.0-beta22"}
+           metosin/malli                       {:mvn/version "0.16.4"}
+           org.clj-commons/hickory             {:mvn/version "0.7.4"}
+           org.clojure/clojure                 {:mvn/version "1.11.4"}
+           org.clojure/data.xml                {:mvn/version "0.2.0-alpha9"}
+           org.clojure/data.zip                {:mvn/version "1.1.0"}
+           techascent/tech.ml.dataset          {:mvn/version "7.030"}
+           tick/tick                           {:mvn/version "0.7.5"}}
+ :aliases {:dev {:extra-deps {cider/cider-nrepl {:mvn/version "0.42.1"}
+                              nrepl/nrepl       {:mvn/version "1.0.0"}}
+                 :main-opts  ["--main" "nrepl.cmdline"
+                              "--middleware" "[cider.nrepl/cider-middleware]"
+                              "--interactive"]}}}
