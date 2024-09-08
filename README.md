@@ -22,9 +22,11 @@ constructive result.
 
 ## Data Sources
 
-### [Federal Parliament- House of Reps - Official Hansard](https://www.aph.gov.au/Parliamentary_Business/Hansard)
+### [Federal Parliament - House of Reps - Official Hansard](https://www.aph.gov.au/Parliamentary_Business/Hansard)
 
 Description: The Federal Government Hansard is the official, edited transcript of the proceedings of the Australian Parliament. It records debates, speeches, questions, and other parliamentary business
+
+Note: I have focussed on just the House of Reps due to time constraints
 
 Usage: I wrote a small program that [retrieves](src/psithur/govhack/get_data.clj) the House of Reps Hansards since 2012 in XML format and then [parses](src/psithur/govhack/process_xml.clj) those XML Documents into a JSON file with the following fields :-
 
@@ -121,7 +123,10 @@ The types of Speech included over that timeframe :-
 |	STATEMENTS BY THE SPEAKER	|	2	|
 
 
-So, by providing a JSON version of the Hansard dataset for over 10 years, we have a dataset that is **far** more usable than PDF or XML of individual sittings for several reasons:
+A big motivation for me in participating in GovHack is to make public datasets more accessable, so as part of this 
+challenge I am providing a full copy of the JSON version of the Hansard dataset for over 10 years.
+
+This means everyone has a dataset that is **far** more usable than PDF or XML of individual sittings for several reasons:
 
 1. Ease of Analysis and Processing:
 
@@ -146,3 +151,91 @@ In summary: A JSON version of the Hansard dataset for over 10 years offers signi
 You can download the processed Hansard dataset [here](https://storage.googleapis.com/parlipulse-hansards/hansard_bq.ndjson.gz)
 
 You can also access the individual XML files [here](https://console.cloud.google.com/storage/browser/parlipulse-hansards)
+
+
+## Using AI to enrich the dataset
+
+After getting the data into a format that was more usable for reuse and "Hacking", my next step was to figure out how
+to use a Large Language Model to enrich the unstructured dataset - politicians speeches in parliament.
+
+I decided to use Google's platform and the Gemini Pro 1.5 model and given the time constraints, I needed to analyse
+thousands of free text speeches as quickly as possible.
+
+I started by [uploading my dataset into BigQuery](https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-json#loading_json_data_into_a_new_table), 
+and then following [the instructions](https://cloud.google.com/bigquery/docs/generate-text) to connect BigQuery
+with [Gemini Pro 1.5](https://cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model#endpoint)
+
+If I had more time, I would have explored other available models to ascertain whether a smaller (cheaper) model
+would provide comparable results.
+
+Once I had BigQuery and Gemini talking, the next step was to iterate through a series of LLM Prompts to find
+the right instructions for the model to classify the data.
+
+As I was working in the GovHack Hackerspace in Canberra while working on this element of my entry, I was able to 
+crowd source improvements to the prompt over an hour or two. Thanks to those mentors who helped!
+
+Here's an example of testing a prompt on 10 random speeches.
+
+```sql
+CREATE TABLE `govhack-24-parlipulse.federal_hansard.first_output_small`
+as
+SELECT *
+FROM ML.GENERATE_TEXT(
+ MODEL `govhack-24-parlipulse.federal_hansard.g15pro`,
+     (
+     SELECT CONCAT(
+       """You are a analyst at the Centre for Deliberative Democracy and Global Governance.
+
+       Analyze the following transcript of a political speech in parliament and classify its overall tone and content on a scale of 1 to 5 (RATING) where:
+
+
+* **1** represents a **very polite, constructive, and collaborative** speech.
+* **5** represents a **very impolite, divisive, and unconstructive** speech.
+
+
+Consider the following factors in your analysis:
+
+
+* **Language and Tone:** Assess the use of respectful language, the presence of personal attacks or inflammatory rhetoric, and the overall tone of the speech (e.g., conciliatory vs. antagonistic).
+* **Focus on Issues:** Evaluate whether the speech primarily focuses on addressing policy issues and presenting solutions or if it's centered on criticizing opponents and creating division.
+* **Collaboration and Compromise:** Determine if the speech demonstrates a willingness to collaborate with others, find common ground, and seek compromise, or if it adopts a rigid and uncompromising stance.
+* **Respect for Others:** Consider whether the speech shows respect for differing viewpoints and acknowledges the contributions of others, or if it dismisses opposing perspectives and seeks to undermine them.
+
+
+Provide specific examples from the transcript to support your classification in the REASONING field.
+Summarize the key subjects or issues being discussed, in the SUBJECTS field
+Identify the speakers primary position on the key subjects, whether they Supports or Opposes in the POSITION field.
+
+
+Your response should be a JSON object in the following form, no other tokens.
+{
+"RATING":YOUR_RATING, #Number between 1 and 5
+"SUBJECTS":SUBJECTS_DISCUSSED, #Top 3, each in no more than one to two words, prioritising specific policy proposals if relevant (e.g. Climate; Taxation; Migration)
+"POSITION":SPEAKERS_POSITION_ON_SUBJECT, #One of the following, with no other content: "Supports; Opposes; Other"
+"REASONING":REASONING #Free text, no more than 50 words
+}
+
+
+Here is the transcript:
+"""
+     , text) AS prompt, speaker_party, speaker_electorate, info_title, date, speaker_name
+     FROM federal_hansard.import
+     ORDER BY RAND()
+LIMIT 100
+   ),
+  STRUCT(4096 AS max_output_tokens, 0 AS temperature,
+ 0.95 AS top_p, true AS flatten_json_output,
+ false AS ground_with_google_search)
+);
+```
+
+The prompt above is the last prompt - the one that I used to produce the output dataset
+
+Given time constraints, I was not able to run the AI LLM enrichment across the full dataset (over 130,000 records over
+12 years) - I would love to extend this analysis further, but to meet the competition timelines, I decided to run
+it over the last 12 months (to 7 Sept 2024) resulting in over 4,000 enriched records.
+
+You can download this dataset [here](https://storage.googleapis.com/parlipulse-hansards/ai_enriched_hansard_12_months_to_sept24.ndjson.gz) 
+or explore the data using an interactive dashboard [here](https://lookerstudio.google.com/reporting/f6904783-fecd-4b04-8039-9c76e481e1b9)
+
+
