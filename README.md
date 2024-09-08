@@ -19,6 +19,44 @@ constructive result.
 ![ParliPulse dashboard](dash.jpg)
 
 
+## Motivation
+
+It took me until Saturday lunch time to settle on a project, and I was largely inspired by the work from 
+Department of Home Affairs [Strengthening Australian democracy A practical agenda for democratic resilience](https://www.homeaffairs.gov.au/about-us-subsite/files/strengthening-australian-democracy.pdf)
+Specifically, some of the mentors explained how community connectedness is important and in Australia
+we have this incredible asset of a democratic society, which (like all assets) should be looked after.
+
+Reading through the report, I came across the example of [**Disagree Better**](https://www.nga.org/disagree-better/)
+
+> Disagree Better –Amid intense political
+polarisation in the United States, the National
+Governors Association (NGA) is encouraging
+governors across the country to reduce partisan
+animosity and ‘disagree better’ by fostering
+respectful debate and modelling positive ways
+of working through policy problems. Building on
+the promising effects of a video which featured
+two opposing governor candidates advocating
+for bipartisanship and pro-democratic norms,
+the NGA has designed a toolkit of customisable
+public-facing interventions such as organising
+‘service projects’ to bring communities together
+through volunteerism, recording an ad or writing
+an op-ed with someone from another party, and
+hosting debates at colleges and universities that
+model healthy conflict.
+
+That made me think about whether AI could be a useful tool in helping us Disagree Better in Australia. And given
+the importance of political discourse in our democracy, using AI to analyse parliamentary discourse seemed like the
+logical next step.
+
+While of course what happens in Parliament is political, this project is **not** meant to be a debate about one party versus
+another, but rather about how we could all learn to get along better and set examples that are meaningful to improve
+outcomes for all Australians.
+
+In putting together the interactive dashboards, I have avoided having a us VS them view on anything. The dashboard
+allows anyone to explore the dimensions of the data, and see (and understand) how AI has classified the discourse, 
+and leaves everyone to draw their own conclusions!
 
 ## Data Sources
 
