@@ -1,8 +1,22 @@
 # Parli Pulse
 
+## [GovHack 2024](https://www.govhack.org)
+
+This GovHack project leverages Large Language Models (AI) to analyze parliamentary transcripts, 
+identifying and highlighting instances of constructive (and divisive) disagreement among politicians. 
+
+By providing this analysis, the project aims to promote healthier debate practices and ultimately 
+enhance democracy by fostering a more collaborative and productive political environment.
+
+It also aims to raise the level of public discourse around usage of AI by providing all the data and
+details of how the data is used and combined with LLM prompts to produce an interesting, and hopefully
+constructive result.
+
+[Goto the interactive dashboard](https://lookerstudio.google.com/reporting/f6904783-fecd-4b04-8039-9c76e481e1b9)
+
 ![ParliPulse logo](ParliPulse.png)
 
-## GovHack 2024
+![ParliPulse dashboard](dash.jpg)
 
 
 
