@@ -177,65 +177,88 @@ crowd source improvements to the prompt over an hour or two. Thanks to those men
 Here's an example of testing a prompt on 10 random speeches.
 
 ```sql
-CREATE TABLE `govhack-24-parlipulse.federal_hansard.first_output_small`
-as
+CREATE TABLE `govhack-24-parlipulse.federal_hansard.first_output` as
 SELECT *
 FROM ML.GENERATE_TEXT(
- MODEL `govhack-24-parlipulse.federal_hansard.g15pro`,
-     (
-     SELECT CONCAT(
-       """You are a analyst at the Centre for Deliberative Democracy and Global Governance.
-
-       Analyze the following transcript of a political speech in parliament and classify its overall tone and content on a scale of 1 to 5 (RATING) where:
-
+  MODEL `govhack-24-parlipulse.federal_hansard.g15pro`,
+      (
+      SELECT CONCAT(
+        """You are a analyst at a think tank that studies deliberative Democracy and strengthening global governance. 
+        Analyze the following transcript of a political speech in parliament and classify its overall tone and content on a scale of 1 to 5 (RATING) where:
 
 * **1** represents a **very polite, constructive, and collaborative** speech.
 * **5** represents a **very impolite, divisive, and unconstructive** speech.
 
-
 Consider the following factors in your analysis:
-
 
 * **Language and Tone:** Assess the use of respectful language, the presence of personal attacks or inflammatory rhetoric, and the overall tone of the speech (e.g., conciliatory vs. antagonistic).
 * **Focus on Issues:** Evaluate whether the speech primarily focuses on addressing policy issues and presenting solutions or if it's centered on criticizing opponents and creating division.
 * **Collaboration and Compromise:** Determine if the speech demonstrates a willingness to collaborate with others, find common ground, and seek compromise, or if it adopts a rigid and uncompromising stance.
 * **Respect for Others:** Consider whether the speech shows respect for differing viewpoints and acknowledges the contributions of others, or if it dismisses opposing perspectives and seeks to undermine them.
 
-
-Provide specific examples from the transcript to support your classification in the REASONING field.
-Summarize the key subjects or issues being discussed, in the SUBJECTS field
+Provide specific examples from the transcript to support your classification in the REASONING field. 
+Summarize the key subjects or issues being discussed, in the SUBJECTS field 
 Identify the speakers primary position on the key subjects, whether they Supports or Opposes in the POSITION field.
 
+Your response should be a JSON object without backticks or anything else, in the following form
 
-Your response should be a JSON object in the following form, no other tokens.
 {
-"RATING":YOUR_RATING, #Number between 1 and 5
-"SUBJECTS":SUBJECTS_DISCUSSED, #Top 3, each in no more than one to two words, prioritising specific policy proposals if relevant (e.g. Climate; Taxation; Migration)
-"POSITION":SPEAKERS_POSITION_ON_SUBJECT, #One of the following, with no other content: "Supports; Opposes; Other"
-"REASONING":REASONING #Free text, no more than 50 words
-}
+ "RATING":YOUR_RATING, #Number between 1 and 5
+ "SUBJECTS":SUBJECTS_DISCUSSED, #Top 3, each in no more than one to two words, prioritising specific policy proposals if relevant (e.g. Climate; Taxation; Migration)
+ "POSITION":SPEAKERS_POSITION_ON_SUBJECT, #One of the following, with no other content: "Supports; Opposes; Other"
+ "REASONING":REASONING #Free text, no more than 200 words
+ }
 
-
-Here is the transcript:
+Input transcript:
 """
-     , text) AS prompt, speaker_party, speaker_electorate, info_title, date, speaker_name
-     FROM federal_hansard.import
-     ORDER BY RAND()
-LIMIT 100
-   ),
+      , text) AS prompt, speaker_party, speaker_electorate, info_title, date, speaker_name,
+ CHAR_LENGTH(text) AS character_count
+
+      FROM federal_hansard.import
+      WHERE date >= DATE_SUB(CURRENT_DATE(), INTERVAL 12 MONTH)
+and info_title IN ('BILLS', 'STATEMENTS BY MEMBERS', 'MATTERS OF PUBLIC IMPORTANCE', 'MOTIONS', "PRIVATE MEMBERS' BUSINESS", "QUESTIONS WITHOUT NOTICE: ADDITIONAL ANSWERS")
+
+    ),
+  
   STRUCT(4096 AS max_output_tokens, 0 AS temperature,
- 0.95 AS top_p, true AS flatten_json_output,
- false AS ground_with_google_search)
+  0.95 AS top_p, true AS flatten_json_output,
+  false AS ground_with_google_search)
 );
 ```
 
-The prompt above is the last prompt - the one that I used to produce the output dataset
+The prompt above is the last prompt - the one that I used to produce the output dataset below 
+and that drives the interactive dashboard. 
 
-Given time constraints, I was not able to run the AI LLM enrichment across the full dataset (over 130,000 records over
-12 years) - I would love to extend this analysis further, but to meet the competition timelines, I decided to run
+My initial attempt to run this prompt over all the data timed out after 6 hours..., so instead I decided to run
 it over the last 12 months (to 7 Sept 2024) resulting in over 4,000 enriched records.
+
+This took almost 4 hours to run (I did not have any time to look at optimising this part of my analysis unfortunately).
 
 You can download this dataset [here](https://storage.googleapis.com/parlipulse-hansards/ai_enriched_hansard_12_months_to_sept24.ndjson.gz) 
 or explore the data using an interactive dashboard [here](https://lookerstudio.google.com/reporting/f6904783-fecd-4b04-8039-9c76e481e1b9)
 
+I would love to extend this analysis further in the future.
 
+### Iterating through prompts
+
+#### Prompt 1
+
+Prompt: Summarize this text
+
+Result :
+
+```
+
+"This is a transcript of a speech by Australian politician Mr. McCormack criticizing a proposed Banking Amendment Bill. He argues that the bill, which allows the government to claim money from inactive bank accounts after three years, is tantamount to theft. 
+
+McCormack likens the government to infamous Australian bushrangers, accusing them of stealing from hardworking Australians, including pensioners, farmers, and even children with Dollarmite accounts, to compensate for their own financial mismanagement and inability to deliver on promised budget surpluses. 
+
+He cites examples like the case of a 95-year-old pensioner who lost $50,000"	
+```
+
+
+Speech: 
+
+```
+McCORMACK (Riverina) (20:08): Jack Donahue, Frank Gardiner, Johnny Gilbert, Ben Hall, Ned Kelly, Dan Morgan, Andrew George Scott—alias Captain Moonlite—and Frederick Ward—alias Captain Thunderbolt—all names from the 19th century and all bushrangers. They stole from other colonial Australians to feather their own nests. And we thought that they belonged back in the 1800s but, alas, the bushrangers ride again. They are on that side of the House, and now they are coming to a bank account near you. This Banking Amendment (Unclaimed Money) Bill 2013 is seeing yet another raft of bushrangers coming to a bank account near you. It could be anyone's bank account. If it has not been active in the last three years then look out! Certainly, there has been a chorus of complaint right across this wide brown land about the 21st century bushrangers who are just waiting to take unclaimed money. This is, after all, theft by any other name. I am going to quote from the Hervey Bay Independent— Mr Neumann interjecting— Mr McCORMACK: Pardon? I am sorry: the parliamentary secretary at the table is saying something I cannot hear, but I will allow his interjection. What was that? Mr Neumann interjecting— Mr McCORMACK: No, it is theft, and you know it is theft! The member at the table knows that it is theft. The member for Blair probably has examples in his own electorate: people who have had their bank accounts raided by this Labor government. He has some explaining to do when they ring his office and say: 'Mr Neumann, why are my bank accounts being taken by your government in the dead of night? It's not fair.' He knows it is not fair, his colleagues know it is not fair and we on this side certainly know it is unfair. I was going to quote from the Hervey Bay Independent of 31 May: The family of a 95-year-old Hervey Bay pensioner who had $50,000 forfeited from a bank account because it hadn't been used for seven years is warning others to be aware of the laws. Craignish resident Jan Powell said she was shocked last week when she went to check on the status of an account her mother opened in 2002, established to pay— wait for it— her own funeral costs, and found the balance had gone from $49,000— to what? What do you think it was? Mr Van Manen: Zero! Mr McCORMACK: Absolutely zero! You are right—you are so correct, member for Forde. It was absolutely zero. Mrs Powell said: I contacted the bank and after being shuffled around I was told that it was Federal Government law that if an account had been inactive for seven years the money was forfeited to the government … I can just imagine what people are feeling now these bank accounts have been reduced to a three-year period. I continue to quote Mrs Powell: I was furious and asked why my mother wasn't contacted and told it would be taken. She has another account with the ANZ Bank that she has her pension put into—so it couldn't have been too hard to track her down. This account was opened in 2002 after her husband died and she saw the strain the funeral costs put on the family so she wanted to save for her own funeral so this wouldn't happen again. Under Australia law cheque or savings accounts that have been inactive for more than seven years are forfeited to the crown. We have known that, but now it is down to three years. Banks must, by March 31 each year— A government member interjecting— Mr McCORMACK: Stop interjecting and listen; you might learn something: … deliver to the Treasurer a register of all unclaimed accounts worth $500 or more, which is then published in the Government Gazette. The Australian Securities and Investments Commission reports Queenslanders' pool of unclaimed money from dormant accounts is now more than $71 million. This actual bill is going to mean that there could be a boost to the budget bottom line of almost $900 million—that is nearly $1 billion under a plan to transfer millions in unclaimed money to the taxman and the corporate regulator. And who is putting this in place? Is it Ned Kelly? Is it Johnny Gilbert? Is it Ben Hall? No—it is the Treasurer! It is the Prime Minister! It is this government, who are 21st century bushrangers coming to a bank account near you—probably your bank account. The government is going to collect an extra $675 million—and I am quoting from the National Times of 22 October 2012: In a measure announced today, the government will collect an extra $675 million by lowering the threshold at which lost superannuation accounts are automatically moved to the Australian Tax Office. But why is this necessary? We all know it is necessary—well, not really 'necessary'; that is probably not quite the correct word to use—that it is happening because this government cannot manage its own finances. It will do anything and it will stop at nothing to balance its books, even if that means taking money out of people's bank accounts where they have saved for their own funerals. Even if it means taking some of those children's Dollarmite accounts that have been inactive for three years and even if it means—as in some examples from near my electorate down in the Riverina—taking the money from people's farm management accounts. Those people have put their money in and they expect it to be there. They have had a hard enough time in recent years with drought, with floods, with fires, with poor water policy from the government. Now they have the 21st century Ned Kellys coming along and taking their hard-earned money. It is outrageous. It is simply unbelievable. But this is the Labor government of 2013. Ben Hall rides again! Never mind the Eugowra Rocks gold robbery, the stagecoach hold-up; this is classic bushranging in the 21st century. People are having their hard-earned money taken from them just to help balance the Treasurer's books. It is just incredible. I refer to a website, Simplifying Your Life Choices, and a comment piece by Rachel Tyler Jones. On 27 February this year in an opinion piece called 'The dummies guide to losing an election', she wrote: I'm no politician, but even I know that taking people's money is a stupid way to win an election. The Government did not consult the Australian Bankers Association … about the new three-year time limit—the figure appears to be an arbitrary one. Even as a Labor supporter— Her words, not mine. I am certainly no Labor supporter. Rachel Tyler Jones further wrote: Even as a Labor supporter, I am struggling to see this as anything but a desperate grab for money by a government that can't live up to its (retracted) budget surplus promises. We have just heard the member for Bradfield describing this as ill-judged, chaotic, desperate, unseemly and an ethically questionable grab for cash. He talked about the extraordinary provisions that this government has gone to to raid what in some cases are people's life savings, to raid what some people have put away to pay for their own funerals, to raid farm bank accounts and to raid kids' Dollarmite savings accounts. It is truly extraordinary. On the website freedomwatch.IPA.org.au of the Institute of Public Affairs, Simon Breheny writes: The Gillard government's plan to take money from dormant bank accounts is a shameful grab for cash and a significant attack on property rights. He is the Director of the Legal Rights Project at the Institute of Public Affairs, a free-market think tank. What he has said here is what people right across Australia are saying, right at this very minute. They are not just coalition supporters, they are Labor supporters—they are once rusted on ALP voters, unionists who have also had their bank accounts raided by these modern-day Captain Moonlites and Captain Thunderbolts. They are not riding in on their horse or holding up a stagecoach or jumping through your window in the dead of night; they are coming through by stealth—coming to a bank account near you. I urge anybody listening to consider this if they have a dormant bank account that they have their funeral payment savings tucked away in, or if they have a farm deposit management account. Any kids who are still up, at 20 past eight this evening, and are perhaps watching this because the cartoons are not on any more, I would urge them to ask mum and dad to make sure they check their bank accounts, because the Labor government might be coming to take them. That is a dreadful thing to say to the children, and I certainly do not want to scare them, but it is the truth. It is the reality of the 21st century Ned Kellys we have got all the other side of the House. Mr Breheny said: People should be able to leave money in bank accounts for as long as they wish without the fear that the government might come along and steal it from them. To do so is an arbitrary acquisition of property by the government. The seven-year clause has been in place for some time, but we have reached a new low now that this government has reduced that to three years. Why has it been reduced to three years? Simply to pay for the Treasurer's inefficiency. He has had six goes at getting the budget right. How many times do you think he has produced a budget deficit? Any guesses? He has not produced one single surplus. He has produced six out of six budget deficits. When the election is held on 14 September, if we on this side of the House are fortunate enough to get the faith of the people of Australia and they vote for our side of politics to once again restore dignity to the parliament and to govern Australia for the 44th parliamentary term, it is going to take 20 consecutive years at over and above any surplus that the Howard government ever produced to make sure that the debt that this government has racked up is paid off. I repeat: it is going to take 20 consecutive years at above the highest surplus that the Howard government ever produced to pay for the debt that this mob has racked up. That is shameful. This raid on people's bank accounts is also shameful. To think that we in Australia, in this great country of ours, have to have kids' and pensioners' and hard-working Australians' bank accounts pinched, robbed, raided, taken, stolen—call it what you like—by people from the Labor side is just truly remarkable. It is a disgrace. We thought that the bushrangers belonged in the Edgar Penzig books. We thought that they belonged in Robbery Under Arms and those other great books and movies about 19th-century colonial Australia. But, no, they belong here again—they are running the Treasury on the Labor side of politics. It is truly a disgrace. We have got poor Jan Powell concerned about the missing $50,000 her mum had tucked away to help pay for her own funeral. We have got farm management deposits scheme raided, when the poor farmers are under enough pressure as it is to try to make ends meet because there has never been good public policy in the last five years from this Rudd-Gillard, possibly Rudd again, government. We have now possibly got the kids' school bank accounts under threat because they have not had any activity in three years. All this is because the Treasurer simply cannot add up. The Treasurer simply comes out and says that he is going to produce a budget surplus, and we have got the Prime Minister backing him up and saying, 'Yes, we are going to produce a surplus,' over and over and over again. Hundreds of times the Prime Minister and her loyal deputy are on the record saying, 'We are going to produce a budget surplus,' and what did we get in the last budget—another deficit and more debt. And on top of all that, we are now getting the kids and pensioners and the hardworking businesspeople and families of Australia having their bank accounts pinched, robbed and taken by this government. It is simply a disgrace. People will not stand for this and nor should they. They should not have to put up with this. This place should be the epitome of democracy. This government should be ruling for all Australians and showing that they care about hardworking people's bank accounts, about the Dollarmite savings accounts and about funeral nest eggs for people, but they do not. They are just pinching it to make up for their Treasurer's absolute ignorance as to how he could possibly ever produce a budget surplus. (Time expired)
+```
