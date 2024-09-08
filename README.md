@@ -2,8 +2,9 @@
 
 ## [GovHack 2024](https://www.govhack.org)
 
-This GovHack project leverages Large Language Models (AI) to analyze parliamentary transcripts, 
-identifying and highlighting instances of constructive (and divisive) disagreement among politicians. 
+This GovHack project uses AI to analyse political debates in the House of Reps, highlighting constructive 
+and divisive moments. By promoting more data around trends in parliamentary debates, I aim to improve democracy 
+and showcase responsible AI use.
 
 By providing this analysis, the project aims to promote healthier debate practices and ultimately 
 enhance democracy by fostering a more collaborative and productive political environment.
@@ -57,6 +58,90 @@ outcomes for all Australians.
 In putting together the interactive dashboards, I have avoided having a us VS them view on anything. The dashboard
 allows anyone to explore the dimensions of the data, and see (and understand) how AI has classified the discourse, 
 and leaves everyone to draw their own conclusions!
+
+## Challenge Entries
+
+### [Civic participation for a more resilient, cohesive democracy.](https://hackerspace.govhack.org/challenges/civic_participation_for_a_more_resilient_cohesive_democracy)
+
+Practical Ideas for Community Rollout
+
+1. "Parli Pulse: Community Edition"
+
+* Initial Design: A simplified, user-friendly version of the Parli Pulse dashboard tailored for community use. It would highlight key trends in parliamentary debates, focusing on instances of constructive disagreement, collaboration, and examples where politicians bridged partisan divides.
+* Data Analysis and Evidence: Initial data analysis from the Parli Pulse project can identify specific debates or moments where positive interactions occurred. These can serve as evidence to support the idea that respectful discourse is possible even in a highly charged political environment.
+* Engagement Across Ages and Communities:
+ * Schools: Integrate simplified versions of the dashboard into civics education, encouraging students to analyze real-world examples of political discourse.
+ * Community Groups: Organize workshops or discussions around the data, facilitating dialogue on the importance of respectful disagreement and collaboration.
+ * Online Platforms: Create social media campaigns or interactive quizzes to engage a wider audience and spark conversations about the project.
+
+2. "Disagree Better" Community Challenges
+
+* Initial Design: Inspired by the NGA's "Disagree Better" campaign, launch community challenges encouraging individuals to engage in respectful conversations with those who hold opposing views. Parli Pulse data can provide examples of successful bipartisan collaboration to inspire participants.
+* Data Analysis and Evidence: Analyze data to identify common ground found in parliamentary debates, even on contentious issues. This can serve as evidence that finding common ground is achievable, even in challenging situations.
+* Engagement Across Ages and Communities:
+* Schools: Organize debates or discussions where students must find common ground on a given issue, drawing inspiration from Parli Pulse data.
+* Community Groups: Facilitate structured conversations where participants with differing opinions can practice respectful disagreement and seek common ground.
+* Online Platforms: Create online forums or platforms where individuals can engage in moderated discussions on various topics, promoting respectful dialogue.
+
+Data Sets Needed
+
+Federal Parliament - House of Reps - Official Hansard: Continue using this dataset to expand the Parli Pulse analysis and identify more instances of positive political interactions.
+Social Media Data: Analyze social media conversations related to political debates to gauge public sentiment and identify areas where respectful discourse is lacking.
+Community Survey Data: Collect data through surveys or focus groups to understand community perceptions of political discourse and identify barriers to respectful disagreement.
+
+Measuring Impact
+
+* Trust in Institutions: Track changes in public opinion surveys regarding trust in parliament and politicians.
+* Social Cohesion: Monitor social media sentiment analysis and conduct surveys to assess changes in community perceptions of social cohesion and willingness to engage with those holding different views.
+* Sense of Belonging: Use surveys and focus groups to measure individuals' sense of belonging within their communities and their willingness to participate in civic life.
+* Civic Awareness: Track increases in online engagement with Parli Pulse data and related educational materials.
+* Civic Participation: Monitor changes in voter turnout, attendance at community meetings, and participation in online discussions related to political issues.
+* Community Connections: Measure changes in community group membership, participation in volunteer activities, and self-reported feelings of connectedness to the community.
+
+### [AI In Governance](https://hackerspace.govhack.org/challenges/ai_in_governance)
+
+1. Boosting Operational Efficiency:
+
+* Automating Analysis: Parli Pulse automates the analysis of parliamentary transcripts, a task that would be extremely time-consuming if done manually. This frees up government staff to focus on other priorities, improving overall efficiency.
+
+2. Improving Transparency:
+
+* Real-Time Visibility: The interactive dashboard provides real-time insights into parliamentary discourse, allowing citizens to see how their representatives are engaging in debates. This transparency can build trust and accountability.
+* Open Data and Methodology: Parli Pulse's commitment to open data and transparency about its AI methodology fosters a deeper understanding of how the analysis is conducted, further increasing transparency.
+
+3. Ensuring Ethical Use:
+
+* Focus on Constructive Discourse: Parli Pulse prioritizes identifying instances of constructive disagreement and collaboration, promoting a positive and ethical use of AI in the political sphere.
+* Transparency and Explainability: By making its data and methodology open, Parli Pulse allows for scrutiny and ensures that the AI is used ethically and without bias.
+
+4. Data Privacy and Security:
+
+* Parli Pulse works with publicly available transcripts, ensuring that no personally identifiable information is used.
+* Anonymous access : No login information is required to access the interactive dashboards
+
+5. Building Public Trust:
+
+* Openness and Education: The project's emphasis on transparency and providing information on AI usage helps educate the public and build trust in AI-driven tools.
+* Focus on Positive Outcomes: Highlighting constructive political interactions can foster a more positive perception of politics and encourage trust in democratic institutions.
+
+6. Future Adaptations:
+
+* Sentiment Analysis: Future iterations of Parli Pulse could incorporate more nuanced sentiment analysis to capture the emotional tone of debates, providing even deeper insights.
+* Predictive Modeling: Advanced AI models could be used to predict potential areas of bipartisan collaboration or identify emerging issues that require attention.
+
+Comprehensive Plan for Implementation
+
+* Expand Data Analysis: Analyze more parliamentary transcripts to build a more comprehensive picture of political discourse over time.
+* Refine AI Models: Continuously improve the AI models to ensure accuracy and address any potential biases.
+* Develop User-Friendly Interfaces: Create intuitive and accessible dashboards and visualizations to make the data easily understandable for a wider audience.
+* Engage with Stakeholders: Collaborate with government agencies, educational institutions, and community groups to promote the use of Parli Pulse and encourage informed discussions about political discourse.
+* Educate the Public: Develop educational resources and outreach programs to explain the project's AI methodology and foster understanding of responsible AI use.
+Concrete Examples
+
+* Identify Bipartisan Opportunities: Parli Pulse could highlight specific instances where politicians from opposing parties found common ground on an issue, demonstrating the potential for collaboration.
+* Track Trends Over Time: Visualize changes in the level of constructive discourse over time, helping identify factors that contribute to positive or negative trends.
+* Educate Future Leaders: Integrate Parli Pulse into civics education programs, empowering students to analyze political discourse and engage in informed debates.
+Presentation and Prototype
 
 ## Data Sources
 
@@ -276,3 +361,10 @@ You can download this dataset [here](https://storage.googleapis.com/parlipulse-h
 or explore the data using an interactive dashboard [here](https://lookerstudio.google.com/reporting/f6904783-fecd-4b04-8039-9c76e481e1b9)
 
 I would love to extend this analysis further in the future.
+
+### Use of AI
+
+Note: I have extensively used AI to help me draft my code, SQL queries, LLM Prompts and free text (such as this page).
+
+All code in this repository is available under Apache License 2.0 and all data downloadable and text in this repo
+that is not code is CC BY-SA 4.0
