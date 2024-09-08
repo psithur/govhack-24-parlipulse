@@ -1,5 +1,7 @@
 # Parli Pulse
 
+![ParliPulse logo](ParliPulse.png)
+
 ## GovHack 2024
 
 
