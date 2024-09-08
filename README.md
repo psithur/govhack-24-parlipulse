@@ -19,6 +19,31 @@ constructive result.
 
 ![ParliPulse dashboard](dash.jpg)
 
+## [Entry Video](https://www.youtube.com/watch?v=BK4rR1ny_8U)
+
+Transcript
+
+In the heart of Australian democracy, a new pulse is beating. It's the pulse of data, analysis, and a vision for a healthier political landscape. This is Parli Pulse.
+
+My name is Felix Barbalet, and I’ve been working with open government data since 2010. For this year’s GovHack competition, I’ve built Parli Pulse which harnesses the power of AI to analyse parliamentary debates in the House of Reps.  
+
+It identifies moments of constructive collaboration and highlights instances of divisive rhetoric. 
+
+The goal? To promote data-driven insights into parliamentary trends, fostering a more informed and engaged democracy.
+
+ Inspired by the Department of Home Affairs' call for a more resilient democracy, and Infosys AI in Governance challenge, I set out to explore how AI could help Australians "Disagree Better." 
+ 
+I believe that open, respectful debate is crucial for a healthy democracy. Parli Pulse aims to shine a light on those moments, encouraging a more collaborative and productive political environment.
+
+In addition to utilising AI, I’ve made the underlying data more accessible and open for anyone to reuse and analyse themselves.
+
+See how AI classifies speeches, track trends over time, and discover the moments where politicians find common ground.
+
+As part of this project, I’ve made the method used to build all this open and accessible, ensuring transparency and fostering trust in AI-driven tools.
+
+Parli Pulse isn't just about analysing the past; it's about shaping the future. Imagine a world where political discourse is informed by data, where citizens are empowered to hold their representatives accountable, and where collaboration triumphs over division. This is the future we envision. Join us on this journey.
+
+
 
 ## Motivation
 
